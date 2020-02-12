@@ -29,7 +29,7 @@ include_once 'connection.php';
 				$json['username']=$row["username"];	
 				$json['email']=$row["email"];	
 				$json['type']=$row["type"];	
-				
+				$json['employer_id'] = $row['employer_id'];	
 				$json['mobile']=$row["mobile"];
 				$json['created_at']=$row["created_at"];
 				
