@@ -33,13 +33,24 @@ include_once 'connection.php';
 				$json['mobile']=$row["mobile"];
 				$json['created_at']=$row["created_at"];
 				
-				
 				$json['msg'] = 'success';
+				$json['status'] = true;
 				
+				if( $row["type"] == '1' ) {
+				    $query_d = "Select * from users where employer_id = '$user_id'";
+				    $result_d = mysqli_query($this->connection, $query_d);
+        			if(mysqli_num_rows($result_d)>0){
+        				$row_d = mysqli_fetch_assoc($result_d);
+        				$json['domestic_helper'] = $row_d['id'];
+        			} else {
+        			    $json['domestic_helper'] = '';
+        			}
+				}
 				
 				echo json_encode($json);
 				mysqli_close($this -> connection);			
-			}else{				
+			}else{
+			    $json['status'] = false;
 				$json['msg'] = 'wrong id or password';
 				echo json_encode($json);
 				mysqli_close($this -> connection);					
@@ -63,10 +74,15 @@ include_once 'connection.php';
 			$user-> does_user_exist($email,$encrypted_password);
 			
 		}else{
-		
+		    
+		    $json['status'] = false;
 			$json['msg'] = ' Please input both the fields';
 			echo json_encode($json);
 		}
 		
-	}else echo "error";
+	}else {
+	    $json['status'] = false;
+		$json['msg'] = 'Error, Something went wrong.';
+		echo json_encode($json);
+	}
 ?>

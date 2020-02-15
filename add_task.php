@@ -10,6 +10,8 @@
 			$this -> db = new DB_Connection();
 			$this -> connection = $this->db->getConnection();
 		}
+		
+				
 		// public function does_user_exist($mob,$email,$encrypted_password,$weight,$height,$goal,$food_pref,$name)
 		public function does_user_exist($user_id,$assigned_user,$date,$time,$instruction,$repeat,$notify,$pictures,$audios)
 		{
@@ -30,29 +32,66 @@
 // 			echo $query;die();
 			
 			foreach($pictures as $a) {
-			    if( $a['type'] == 'Picture' ) {
+			    if( $a->type == 'Picture' ) {
 					$image_name = str_replace(".",$user_id,uniqid('', true)).'.png';
 					$path = 'assets/task_files/'.$image_name;
-					$bsf = str_replace('data:image/png;base64,', '', $a['file']);
+					$bsf = str_replace('data:image/png;base64,', '', $a->file);
 					$bsf = str_replace(' ', '+', $bsf);
 					$data = base64_decode($bsf);
 					// $data = base64_decode($a['file']);
 		        	file_put_contents($path, $data);
 
-					$type=$a['type'];
+					$type=$a->type;
 					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
 					$insert_a = mysqli_query($this -> connection, $query_a);
 				}
 			}
 			
-			foreach($audios as $aa) {
-			 //   if(isset($_FILES['file'])){
+// 			if( count($audios['tmp_name']) == 1 ) {
+// 			    $errors= array();
+// 						$file_name = $audios['name'][$i];
+// 						$file_size =$audios['size'][$i];
+// 						$file_tmp =$audios['tmp_name'][$i];
+// 						$file_type=$audios['type'][$i];
+// 						$file_ext=strtolower(end(explode('.',$file_name)));
+
+// 						// $extensions= array("jpeg","jpg","png");
+
+// 						// if(in_array($file_ext,$extensions)=== false){
+// 						//    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+// 						// }
+
+// 						// echo $file_name;
+// 						// die();
+
+// 						if($file_size > 9097152){
+// 							$errors[]='File size must be excately 8 MB';
+// 						}
+
+// 						if(empty($errors)==true){
+// 						    $path = 'assets/task_files/'.uniqid('', true).$file_ext;
+// 							move_uploaded_file($file_tmp,$path);
+				            
+				            
+				
+// 							$type='audio';
+//         					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
+//         					$insert_a = mysqli_query($this -> connection, $query_a);
+// 				// 			echo $query_a;
+// 						}else{
+// 						 $json['errors'] = $errors;
+// 						}
+// 			}
+			
+// 			for($i=0;$i<count($audios['tmp_name']);$i++) {
+// 			foreach($audios as $aa) {
+			    if(isset($audios['audio_files'])){
 						$errors= array();
-						$file_name = $aa['name'];
-						$file_size =$aa['size'];
-						$file_tmp =$aa['tmp_name'];
-						$file_type=$aa['type'];
-						// $file_ext=strtolower(end(explode('.',$_FILES['audio_file']['name'])));
+						$file_name = $audios['audio_files']['name'];
+						$file_size =$audios['audio_files']['size'];
+						$file_tmp =$audios['audio_files']['tmp_name'];
+						$file_type=$audios['audio_files']['type'];
+						$file_ext=strtolower(end(explode('.',$file_name)));
 
 						// $extensions= array("jpeg","jpg","png");
 
@@ -60,16 +99,20 @@
 						//    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
 						// }
 
-						// echo $file_name;
-						// die();
+				// 		echo $file_name;
+				// 		echo $file_tmp;
+				// 		die();
 
 						if($file_size > 9097152){
 							$errors[]='File size must be excately 8 MB';
 						}
 
 						if(empty($errors)==true){
-						    $path = 'assets/task_files/'.uniqid('', true).$file_name;
+						    $path = 'assets/task_files/'.uniqid('', true).'.'.$file_ext;
 							move_uploaded_file($file_tmp,$path);
+				            
+				            
+				
 							$type='audio';
         					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
         					$insert_a = mysqli_query($this -> connection, $query_a);
@@ -77,8 +120,9 @@
 						}else{
 						 $json['errors'] = $errors;
 						}
-				//   }
-			}
+				  } //if exist condition end
+// 			}
+
 
 // 			foreach($attachment as $a) {
 // 				if( $a['type'] == 'picture' ) {
@@ -168,22 +212,77 @@
 	
 	
 	$user = new User();
-
-	if(isset($_POST['user_id'],$_POST['assigned_user'],$_POST['date'],$_POST['time'],$_POST['instruction'],$_POST['repeat'],$_POST['notify'])) {
+	
+	if(isset($_POST['user_id'],$_POST['assigned_user'],$_POST['date'],$_POST['time'],$_POST['instruction'],$_POST['days_repeat'],$_POST['notify'])) {
 		$user_id=$_POST['user_id'];
 		$assigned_user = $_POST['assigned_user'];
 		$date = $_POST['date'];
 		$time=$_POST['time'];
 		$instruction=$_POST['instruction'];
-		$repeat=$_POST['repeat'];
+		$repeat=$_POST['days_repeat'];
 		$notify = $_POST['notify'];
 		$pictures = [];
 		$audios = [];
+		
+//Test STart		
+// 		    $myfile = fopen("newfilea.txt", "w") or die("Unable to open file!");
+// 			$txt = "John Doe\n";
+// 			$tts = reArrayFiles($_FILES['audio_files']);
+// 			fwrite($myfile, $tts );
+// 			fclose($myfile);
+// // 		$json['testing_audios'] = reArrayFiles($_FILES['audio_files']['tmp_name']);
+// 		$json['testing_audios'] = $_FILES['audio_files']['tmp_name'];
+		
+// 		for($i=0;$i<count($_FILES['audio_files']['tmp_name']);$i++) {
+// // 		foreach($tts as $aa) {
+// 			 //   if(isset($_FILES['file'])){
+// 						$errors= array();
+// 						$file_name = $_FILES['audio_files']['name'][$i];
+// 						$file_size =$_FILES['audio_files']['size'][$i];
+// 						$file_tmp =$_FILES['audio_files']['tmp_name'][$i];
+// 						$file_type=$_FILES['audio_files']['type'][$i];
+// 						$file_ext=strtolower(end(explode('.',$file_name)));
+
+// 						// $extensions= array("jpeg","jpg","png");
+
+// 						// if(in_array($file_ext,$extensions)=== false){
+// 						//    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+// 						// }
+
+// 						// echo $file_name;
+// 						// die();
+
+// 						if($file_size > 9097152){
+// 							$errors[]='File size must be excately 8 MB';
+// 						}
+
+// 						if(empty($errors)==true){
+// 						    $path = 'assets/task_files/'.uniqid('', true).$file_name.'.'.$file_ext;
+// 							move_uploaded_file($file_tmp,$path);
+// 				// 			$type='audio';
+//     //     					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
+//     //     					$insert_a = mysqli_query($this -> connection, $query_a);
+// 				// 			echo $query_a;
+// 						}else{
+// 						 $json['errors'] = $errors;
+// 						}
+// 				//   }
+// 			}
+		
+		
+		
+// 		echo json_encode($_FILES['audio_files']);
+// 		die();
+		
+		//TEst end
+		
 		if( isset($_POST['pictures']) ) {
-			$pictures = $_POST['pictures'];
+		    $tt = json_decode($_POST['pictures']);
+			$pictures = $tt;
 		}
 		if( isset($_FILES['audio_files']) ) {
-			$audios = reArrayFiles($_FILES['audio_files']);
+// 			$audios = reArrayFiles($_FILES['audio_files']);
+            $audios = $_FILES;
 		}
 		
 // 		$pictures = [  ];
@@ -282,7 +381,25 @@
 
 		
 	}else{
+// 		$file = file_get_contents('newfile.txt');
+// 		$tt = json_decode($file);
+// 		print_r($tt[0]->file);
 		
+// 		foreach($tt as $a) {
+// 			    if( $a->type == 'Picture' ) {
+// 					$image_name = uniqid('', true).'itested.png';
+// 					$path = 'assets/task_files/'.$image_name;
+// 					$bsf = str_replace('data:image/png;base64,', '', $a->file);
+// 					$bsf = str_replace(' ', '+', $bsf);
+// 					$data = base64_decode($bsf);
+// 					// $data = base64_decode($a->file);
+// 		        	file_put_contents($path, $data);
+//                     echo "SS--";
+// 				}
+// 			}
+		
+// 		die();
+
 			$json['msg'] = 'Error, Something went wrong.';
 			$json['status'] = false;
 			echo json_encode($json);
