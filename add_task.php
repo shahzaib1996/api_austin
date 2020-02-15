@@ -10,8 +10,6 @@
 			$this -> db = new DB_Connection();
 			$this -> connection = $this->db->getConnection();
 		}
-		
-				
 		// public function does_user_exist($mob,$email,$encrypted_password,$weight,$height,$goal,$food_pref,$name)
 		public function does_user_exist($user_id,$assigned_user,$date,$time,$instruction,$repeat,$notify,$pictures,$audios)
 		{
