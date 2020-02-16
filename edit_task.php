@@ -25,17 +25,17 @@
 			
 			
 			foreach($pictures as $a) {
-			    if( $a['type'] == 'Picture' ) {
-					$image_name = str_replace(".",$task_id,uniqid('', true)).'.png';
+			    if( $a->type == 'Picture' ) {
+					$image_name = str_replace(".",$user_id,uniqid('', true)).'.png';
 					$path = 'assets/task_files/'.$image_name;
-					$bsf = str_replace('data:image/png;base64,', '', $a['file']);
+					$bsf = str_replace('data:image/png;base64,', '', $a->file);
 					$bsf = str_replace(' ', '+', $bsf);
 					$data = base64_decode($bsf);
 					// $data = base64_decode($a['file']);
 		        	file_put_contents($path, $data);
 
-					$type=$a['type'];
-					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
+					$type=$a->type;
+					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
 					$insert_a = mysqli_query($this -> connection, $query_a);
 				}
 			}
