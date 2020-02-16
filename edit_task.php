@@ -28,29 +28,45 @@
 //     		die();
 
 			//delete attachments
-			$sql_d = "delete from attachment WHERE task_id = '$task_id' ";
-   			mysqli_query($this -> connection, $sql_d);
+// 			$sql_d = "delete from attachment WHERE task_id = $task_id ";
+//   			mysqli_query($this -> connection, $sql_d);
 			
+// 			$myfile = fopen("edit_test.txt", "w") or die("Unable to open file!");
+//     		$txt = "John Doe\n";
+//     		$tts = $sql_d;
+//     		fwrite($myfile, $tts );
+//     		fclose($myfile);
+//     		echo "Tere KMF! testing something else...";
+//     		die();
+			if( count($pictures) != 0 ){
+			    $sql_d = "delete from attachment WHERE task_id = $task_id and file_type='Picture' ";
+   			    mysqli_query($this -> connection, $sql_d);
 			
-			foreach($pictures as $a) {
-			    if( $a->type == 'Picture' ) {
-					$image_name = str_replace(".",$user_id,uniqid('', true)).'.png';
-					$path = 'assets/task_files/'.$image_name;
-					$bsf = str_replace('data:image/png;base64,', '', $a->file);
-					$bsf = str_replace(' ', '+', $bsf);
-					$data = base64_decode($bsf);
-					// $data = base64_decode($a['file']);
-		        	file_put_contents($path, $data);
-
-					$type=$a->type;
-					$query_p = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
-					$insert_p = mysqli_query($this -> connection, $query_p);
-				}
+    			foreach($pictures as $a) {
+    			    if( $a->type == 'Picture' ) {
+    					$image_name = str_replace(".",$user_id,uniqid('', true)).'.png';
+    					$path = 'assets/task_files/'.$image_name;
+    					$bsf = str_replace('data:image/png;base64,', '', $a->file);
+    					$bsf = str_replace(' ', '+', $bsf);
+    					$data = base64_decode($bsf);
+    					// $data = base64_decode($a['file']);
+    		        	file_put_contents($path, $data);
+    
+    					$type=$a->type;
+    					$query_p = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
+    					$insert_p = mysqli_query($this -> connection, $query_p);
+    				}
+    			}
+			
+			    
 			}
 			
 // 			for($i=0;$i<count($audios['tmp_name']);$i++) {
 // 			foreach($audios as $aa) {
 			    if(isset($audios['audio_files'])){
+			            $sql_da = "delete from attachment WHERE task_id = $task_id and file_type='Audio' ";
+   			            mysqli_query($this -> connection, $sql_da);
+			        
 						$errors= array();
 						$file_name = $audios['audio_files']['name'];
 						$file_size =$audios['audio_files']['size'];
@@ -70,7 +86,7 @@
 				            
 				            
 				
-							$type='audio';
+							$type='Audio';
         					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
         					$insert_a = mysqli_query($this -> connection, $query_a);
 				// 			echo $query_a;
