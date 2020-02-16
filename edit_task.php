@@ -18,6 +18,14 @@
 			//updating record	    
 			$query = "update tasks set mob_date='$date', mob_time='$time', instruction='$instruction', days_repeat='$repeat', notify='$notify' where id='$task_id' ";
 			$inserted = mysqli_query($this -> connection, $query);
+			
+// 			$myfile = fopen("edit_test.txt", "w") or die("Unable to open file!");
+//     		$txt = "John Doe\n";
+//     		$tts = $query;
+//     		fwrite($myfile, $tts );
+//     		fclose($myfile);
+//     		echo "Tere KMF! testing something else...";
+//     		die();
 
 			//delete attachments
 			$sql_d = "delete from attachment WHERE task_id = '$task_id' ";
@@ -35,8 +43,8 @@
 		        	file_put_contents($path, $data);
 
 					$type=$a->type;
-					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
-					$insert_a = mysqli_query($this -> connection, $query_a);
+					$query_p = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
+					$insert_p = mysqli_query($this -> connection, $query_p);
 				}
 			}
 			
@@ -63,7 +71,7 @@
 				            
 				
 							$type='audio';
-        					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$inserted_id','$path','$type')";
+        					$query_a = "insert into attachment (task_id,file_path,file_type) values ('$task_id','$path','$type')";
         					$insert_a = mysqli_query($this -> connection, $query_a);
 				// 			echo $query_a;
 						}else{
@@ -82,7 +90,7 @@
 
 			
 			if($inserted == 1 ){
-				$json['msg'] = 'Task has been updated.'.mysqli_insert_id($this -> connection);
+				$json['msg'] = 'Task has been updated.'.$task_id;
 				$json['status'] = true;
 				// $json['errors'] = [];
 			}else{
@@ -127,6 +135,16 @@
 		$pictures = [];
 		$audios = [];
 		$delete_attachment = [];
+		
+// 		$myfile = fopen("edit_test.txt", "w") or die("Unable to open file!");
+// 		$txt = "John Doe\n";
+// 		$tts = $_POST['date'];
+// 		fwrite($myfile, $tts );
+// 		fclose($myfile);
+// 		echo "Tere KMF! testing something else...";
+// 		die();
+		
+		
 		if( isset($_POST['delete_attachment']) && $_POST['delete_attachment'] != null ) {
 			$delete_attachment = $_POST['delete_attachment'];
 		}

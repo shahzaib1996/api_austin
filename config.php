@@ -2,7 +2,7 @@
 
 define('hostname', 'localhost');
 define('user', 'root');
-define('password', '');
+define('password', 'austin');
 define('db_name', 'db_austin');
 
 ?>
